@@ -1,0 +1,107 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 15s
+alerting:
+  alertmanagers:
+    - static_configs:
+      - targets:
+        - alertmanager:9093
+
+scrape_configs:
+
+### Prometheus Self Exporter
+- job_name: prometheus
+  honor_timestamps: true
+  metrics_path: /metrics
+  scheme: http
+  follow_redirects: true
+  static_configs:
+  - targets:
+    - localhost:9090
+
+### Node Exporter
+- job_name: 'node'
+  scheme: https
+  basic_auth:
+      username: prometheus
+      password: prometheus
+  tls_config:
+      ca_file: /etc/prometheus/ssl/fullchain.pem
+  metrics_path: /node
+  static_configs:
+    - targets:
+      - node
+  relabel_configs:
+    - target_label: __address__
+      replacement: nginx:8443  # The blackbox exporter's real hostname:port.
+
+### Nginx Exporter
+- job_name: 'nginx'
+  scheme: https
+  basic_auth:
+      username: prometheus
+      password: prometheus
+  tls_config:
+      ca_file: /etc/prometheus/ssl/fullchain.pem
+  metrics_path: /nginx
+  static_configs:
+    - targets:
+      - nginx
+  relabel_configs:
+    - target_label: __address__
+      replacement: nginx:8443  # The blackbox exporter's real hostname:port.
+
+### Mysqld Exporter
+- job_name: 'mysqld'
+  scheme: https
+  basic_auth:
+      username: prometheus
+      password: prometheus
+  tls_config:
+      ca_file: /etc/prometheus/ssl/fullchain.pem
+  metrics_path: /mysqld
+  static_configs:
+    - targets:
+      - mysqld
+  relabel_configs:
+    - target_label: __address__
+      replacement: nginx:8443  # The blackbox exporter's real hostname:port.
+
+### PHP-FPM Exporter
+- job_name: 'php-fpm'
+  scheme: https
+  basic_auth:
+      username: prometheus
+      password: prometheus
+  tls_config:
+      ca_file: /etc/prometheus/ssl/fullchain.pem
+  metrics_path: /php-fpm
+  static_configs:
+    - targets:
+      - php-fpm
+  relabel_configs:
+    - target_label: __address__
+      replacement: nginx:8443  # The blackbox exporter's real hostname:port.
+
+### Blackbox Exporter
+- job_name: 'blackbox'
+  scheme: https
+  basic_auth:
+      username: prometheus
+      password: prometheus
+  tls_config:
+      ca_file: /etc/prometheus/ssl/fullchain.pem
+  metrics_path: /probe
+  params:
+    module: [http_2xx]  # Look for a HTTP 200 response.
+  static_configs:
+    - targets:
+      - http://nginx
+      - https://nginx:8443
+  relabel_configs:
+    - source_labels: [__address__]
+      target_label: __param_target
+    - source_labels: [__param_target]
+      target_label: instance
+    - target_label: __address__
+      replacement: nginx:8443  # The blackbox exporter's real hostname:port.
