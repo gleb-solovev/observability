@@ -6,6 +6,8 @@ alerting:
     - static_configs:
       - targets:
         - alertmanager:9093
+rule_files:
+  - 'alerts/*.yml'
 
 scrape_configs:
 
@@ -26,7 +28,7 @@ scrape_configs:
       username: prometheus
       password: prometheus
   tls_config:
-      ca_file: /etc/prometheus/ssl/fullchain.pem
+      ca_file: /etc/ssl/fullchain.pem
   metrics_path: /node
   static_configs:
     - targets:
@@ -42,7 +44,7 @@ scrape_configs:
       username: prometheus
       password: prometheus
   tls_config:
-      ca_file: /etc/prometheus/ssl/fullchain.pem
+      ca_file: /etc/ssl/fullchain.pem
   metrics_path: /nginx
   static_configs:
     - targets:
@@ -58,7 +60,7 @@ scrape_configs:
       username: prometheus
       password: prometheus
   tls_config:
-      ca_file: /etc/prometheus/ssl/fullchain.pem
+      ca_file: /etc/ssl/fullchain.pem
   metrics_path: /mysqld
   static_configs:
     - targets:
@@ -74,7 +76,7 @@ scrape_configs:
       username: prometheus
       password: prometheus
   tls_config:
-      ca_file: /etc/prometheus/ssl/fullchain.pem
+      ca_file: /etc/ssl/fullchain.pem
   metrics_path: /php-fpm
   static_configs:
     - targets:
@@ -90,7 +92,7 @@ scrape_configs:
       username: prometheus
       password: prometheus
   tls_config:
-      ca_file: /etc/prometheus/ssl/fullchain.pem
+      ca_file: /etc/ssl/fullchain.pem
   metrics_path: /probe
   params:
     module: [http_2xx]  # Look for a HTTP 200 response.

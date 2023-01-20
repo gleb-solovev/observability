@@ -10,9 +10,8 @@ global:
   victorops_api_url: https://alert.victorops.com/integrations/generic/20131114/alert/
   telegram_api_url: https://api.telegram.org
 route:
-  receiver: web.hook
-  group_by:
-  - alertname
+  receiver: telegram
+  group_by: ['...']
   continue: false
   group_wait: 30s
   group_interval: 5m
@@ -22,16 +21,9 @@ inhibit_rules:
     severity: critical
   target_match:
     severity: warning
-  equal:
-  - alertname
-  - dev
-  - instance
 receivers:
-- name: web.hook
-  webhook_configs:
-  - send_resolved: true
-    http_config:
-      follow_redirects: true
-    url: http://127.0.0.1:5001/
-    max_alerts: 0
+- name: telegram
+  telegram_configs:
+  - bot_token: 5936703586:AAE1oaBuNQqNVYm_bwM3zw9vKtRsnBCckkY
+    chat_id: 1418537757
 templates: []

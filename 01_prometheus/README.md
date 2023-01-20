@@ -1,17 +1,17 @@
-# Выполненые действия
+# Выполненные действия
 
 ## Подготовка окружения
 
-* За основу взял образ Ubuntu 2204
+* За основу взял образ Ubuntu 22.04
 * Установил в системе docker и docker compose
-* При выполнении в папке 01_prometheus `docker compose up -d` разворачивается готовое окружение из вебсервиса, экспортеров, Prometheus и Alert Manager.
+* При выполнении в папке 01_prometheus `docker compose up -d` разворачивается готовое окружение из вебсервиса, экспортеров, Prometheus и Alertmanager.
 
 ### Конфигурация Webapp
 
 Конфигурация приложения описана в файле docker-compose.yml и состоит из публично доступных докер образов.
 
 1. В качестве CMS выбрал Wordpress на базе php-fpm в образе wordpress:fpm.
-    Конфигурация php-fpm для контейнера wordpress:fpm находится в файле `config/www.conf`. Строчка `pm.status_path = /status` необходима для работы php-fpm экспортера.
+    Конфигурация php-fpm для контейнера wordpress:fpm находится в файле `config/www.conf`. Строчка `pm.status_path = /status` необходима для работы php-fpm экспортера. После развёртывания, вебсайт доступен на [localhost:80](http://localhost:80).
 2. В качестве базы данных используется образ MySQL в виде образа mysql:8.
     Данные для аутентификации описаны в переменных окружения контейнера.
 3. В качестве вебсервера используется Nginx образ nginx:alpine.
@@ -27,11 +27,11 @@
 
 ### Конфигурация Prometheus
 
-Prometheus разворачивается из образа prometheus:latest. Конфигурация находится по пути `GAP-1/prometheus.yml`. Также вольюмом подключается ключ `ssl/fullchain.pem` необходимый для работы c SSL на эндпоинтах экспортеров.
+Prometheus разворачивается из образа prometheus:latest. Конфигурация находится по пути `GAP-1/prometheus/`. Также вольюмом подключается ключ `ssl/fullchain.pem` необходимый для работы c SSL на эндпоинтах экспортеров.
 
 ### Конфигурация Alertmanager
 
-Alertmanager разворачивается из образа alertmanager:latest. Конфигурация находится по пути `GAP-1/alertmanager.yml`
+Alertmanager разворачивается из образа alertmanager:latest и сконфигурирован на работу через Telegram бота (ключ в примере удалён после проверки работоспособности). Конфигурация находится по пути `GAP-1/alertmanager.yml`. В файле `GAP-1/prometheus/alerts/0_component_down.yml` сконфигурирован алерт о недоступности любой из компонент.
 
 ### Задание со звёздочкой
 

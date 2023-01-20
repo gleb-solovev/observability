@@ -12,7 +12,6 @@ services:
     depends_on:
       - database
     volumes:
-      - wp-wordpress:/var/www/html
       - ./config/www.conf:/usr/local/etc/php-fpm.d/www.conf
     environment:
       - WORDPRESS_DB_HOST=database:3306
@@ -26,8 +25,6 @@ services:
     restart: unless-stopped
     networks:
       - webapp
-    volumes:
-      - wp-dbdata:/var/lib/mysql
     environment:
       - MYSQL_DATABASE=wordpress
       - MYSQL_USER=wordpress
@@ -54,7 +51,6 @@ services:
       - 80:80
       - 8443:8443
     volumes:
-      - wp-wordpress:/var/www/html
       - ./config/default.conf:/etc/nginx/conf.d/default.conf
       - ./config/htpasswd:/etc/nginx/.htpasswd
       - ./ssl:/etc/ssl
@@ -126,9 +122,8 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - ./GAP-1/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./ssl/fullchain.pem:/etc/prometheus/ssl/fullchain.pem
-      - ps-prometheus:/prometheus
+      - ./GAP-1/prometheus/:/etc/prometheus/
+      - ./ssl/fullchain.pem:/etc/ssl/fullchain.pem
 
   alertmanager:
     image: prom/alertmanager:latest
@@ -140,12 +135,6 @@ services:
       - 9093:9093
     volumes:
       - ./GAP-1/alertmanager.yml:/etc/alertmanager/alertmanager.yml
-
-volumes:
-  wp-wordpress:
-  wp-dbdata:
-  ps-prometheus:
-
 
 networks:
   webapp:
