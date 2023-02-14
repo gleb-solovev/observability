@@ -1,0 +1,17 @@
+version: '3'
+services:
+
+  ### Grafana
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    networks:
+      - 01_prometheus_prometheus
+    ports:
+      - 3000:3000
+
+networks:
+  01_prometheus_prometheus:
+    external: true
