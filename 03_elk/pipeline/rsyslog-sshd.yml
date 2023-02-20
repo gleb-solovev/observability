@@ -1,0 +1,22 @@
+input {
+    tcp {
+        port => 5000
+        codec => "json"
+        type => "rsyslog-sshd"
+    }
+}
+
+filter {
+    grok {
+        match => { "message" => "%{DATA:system.auth.ssh.event} %{DATA:system.auth.ssh.method} for (invalid user )?%{DATA:system.auth.user} from %{IPORHOST:system.auth.ip} port %{NUMBER:system.auth.port} ssh2(: %{GREEDYDATA:system.auth.ssh.signature})?" }
+    }
+}
+
+output {
+    elasticsearch {
+        index => "sshd-%{+YYYY.MM}"
+        hosts => "elasticsearch:9200"
+        user => "elasticuser"
+        password => "strongpassword"
+    }
+}
